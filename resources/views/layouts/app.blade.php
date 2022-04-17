@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <script src="https://cdn.tailwindcss.com"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>@yield('title',"Find Your Movie")</title>
@@ -54,13 +55,17 @@
 
 
 
-                    <!-- Topbar Search -->
+                    <!-- Topbar Search --><a href="{{ route('home.index') }}">
+                        <h3 class="nav-title text-primary" style="font-family: 'Abril Fatface', cursive;"><i>Sudo
+                                Cafe</i>
+                        </h3>
+                    </a>
                     <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
                         <div class="input-group">
                             <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
                                 aria-label="Search" aria-describedby="basic-addon2">
                             <div class="input-group-append">
-                                <button class="btn btn-primary" type="button">
+                                <button class="btn btn-primary">
                                     <i class="fas fa-search fa-sm"></i>
                                 </button>
                             </div>
@@ -101,14 +106,14 @@
 
 
                         <li class="nav-item">
-                            <a href="" class="nav-link text-dark">Menu</a>
+                            <a href="{{ route('menu.index') }}" class="nav-link text-dark">Menu</a>
 
                         </li>
                         <li class="nav-item">
                             <a href="{{ route('cart.index') }}" class="nav-link">
                                 <i class="fa fa-shopping-bag" aria-hidden="true"></i>
                                 <span id="cart-value" class="badge badge-primary rounded-circle"
-                                    style="transform: translate(0,-60%)">{{ sizeof(Auth::user()->getCarts()) == 0 ? '' : sizeof(Auth::user()->getCarts()) }}</span></a>
+                                    style="transform: translate(0,-60%)">{{ Auth::user() ? (sizeof(Auth::user()->getCarts()) == 0 ? '' : sizeof(Auth::user()->getCarts())) : '' }}</span></a>
                         </li>
                         <div class="topbar-divider d-none d-sm-block"></div>
 
@@ -230,7 +235,7 @@
 
     <!-- Custom scripts for all pages-->
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
 
 
     <!--Data Table-->

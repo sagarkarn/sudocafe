@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('content')
+    <script src="{{ asset('js/app.js') }}"></script>
     <div class="row mt-2">
         <div class="col-md-8">
             @foreach ($items as $item)
@@ -45,15 +46,127 @@
                     </div>
                 </div>
             @endforeach
+
         </div>
+        {{-- Address Model --}}
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Address</h5>
+                    <div class="border rounded p-2 m-2" id="selected_address">
+                        <span><strong>{{ $default_address->getHno() }}<br></strong>
+                            {{ $default_address->getStreet() }},
+                            {{ $default_address->getCity() }},
+                            {{ $default_address->getState() }},
+                            {{ $default_address->getZip() }}-{{ $default_address->getCountry() }}<br />
+                            {{ $default_address->getPhone() }}</span>
+                    </div>
                     <div class="text-right">
-                        <button class="btn btn-outline-primary"> <i class="fa fa-plus" aria-hidden="true"></i> Add
+                        <button onclick="$('#exampleModal').modal('show');" class="btn btn-outline-primary"> <i
+                                class="fa fa-plus" aria-hidden="true"></i> Change
                             address</button>
                     </div>
+                </div>
+            </div>
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h5 class="card-title">Payment</h5>
+                    <div style="display: flex; flex-direction: row; justify-content: left; align-items: center">
+                        <input type="radio" name="payment_mode" />
+                        <label class="ml-2 mb-0">Cash On Delivery</label>
+                    </div>
+
+                    <div style="display: flex; flex-direction: row; justify-content: left; align-items: center">
+                        <input type="radio" name="payment_mode" />
+                        <label class="ml-2 mb-0">Bhim UPI Google Pay, Phone Pay</label>
+                    </div>
+                    <button class="btn btn-primary w-100 mt-3">Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Address</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+
+                    <form id="MyForm" action="{{ route('address.store') }}" method="POST">
+                        @csrf
+                        <div class="row">
+                            <div class="col-sm-6">
+                                @foreach (Auth::user()->addresses as $address)
+                                    <div class="card mb-1 col-12" style="cursor: pointer;">
+                                        <div class="card-body"
+                                            onclick="$('#selected_address').html($(this).html());$('#exampleModal').modal('hide');">
+                                            <span><strong>{{ $address->getHno() }}<br></strong>
+                                                {{ $address->getStreet() }},
+                                                {{ $address->getCity() }},
+                                                {{ $address->getState() }},
+                                                {{ $address->getZip() }}-{{ $address->getCountry() }}<br />
+                                                {{ $address->getPhone() }}</span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                            <div class="col-sm-6">
+                                <div>
+                                    <img class="sb-title-icon"
+                                        src="https://fonts.gstatic.com/s/i/googlematerialicons/location_pin/v5/24px.svg"
+                                        alt="">
+                                    <span class="sb-title">Address Selection</span>
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" name="hno" id="hno" aria-describedby="helpId"
+                                        placeholder="houseno">
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="text" class="form-control" name="street" id="street" placeholder="Steet">
+                                </div>
+
+                                <div class="form-group">
+                                    <input type="text" class="form-control" name="city" id="city" placeholder="city">
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-6 form-group">
+                                        <input type="text" class="form-control" placeholder="State/Province" name="state"
+                                            id="state" />
+                                    </div>
+                                    <div class="col-6 form-group">
+                                        <input type="text" class="form-control" placeholder="Zip/Postal code" id="zip"
+                                            name="zip" />
+                                    </div>
+                                </div>
+                                <div class="form-group">
+
+                                    <input type="text" placeholder="Country" id="country" name="country"
+                                        class="form-control" />
+
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" placeholder="Phone number" id="phone" name="phone"
+                                        class="form-control" />
+                                </div>
+                                <button class="button-cta">Save &amp;
+                                    Select</button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    {{-- <button type="button" class="btn btn-primary">Select</button> --}}
+                    <a href="{{ route('address.index') }}" type="button" class="btn btn-primary">Customize Address</a>
                 </div>
             </div>
         </div>
@@ -87,5 +200,93 @@
             if (current <= 1) return;
             $(id).text(--current);
         }
+
+        $(document).ready(function() {
+            $("#MyForm").validate({
+                rules: {
+                    'hno': {
+                        required: true,
+                        minlength: 2
+                    },
+                    'street': {
+                        required: true,
+                        minlength: 2
+                    },
+                    'city': {
+                        required: true,
+                    },
+                    'state': {
+                        required: true,
+                    },
+                    'zip': {
+                        required: true,
+                        minlength: 6
+                    },
+                    'country': {
+                        required: true,
+                    },
+                    'phone': {
+                        required: true,
+                        minlength: 10,
+                    }
+                },
+
+                messages: {
+                    'state': "Please enter a valid state Name.",
+                    'city': "Please enter a valid city Name.",
+                    'zip': "Please enter valid zip code.",
+                    'phone': "Please enter a valid phone number",
+                },
+
+                errorElement: 'span',
+                errorPlacement: function(error, element) {
+                    error.addClass('invalid-feedback');
+                    element.closest('.form-group').append(error);
+                },
+
+                highlight: function(element, errorClass, validClass) {
+                    $(element).addClass('is-invalid');
+                },
+
+                unhighlight: function(element, errorClass, validClass) {
+                    $(element).removeClass('is-invalid');
+                },
+
+            });
+            var form = document.getElementById("MyForm");
+            form.addEventListener("submit", function(event) {
+                event.preventDefault()
+                const data = new FormData(form);
+                const json = Object.fromEntries(data.entries());
+
+                fetch(form.action, {
+                    method: form.method,
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json; charset=UTF-8',
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    },
+                    body: JSON.stringify(json),
+                }, ).then(res => {
+                    // res.json().then(json => setSelected(json));
+
+                    let html = `<span><strong>${json['hno']}<br></strong>
+                                                ${json['street']},
+                                                ${json['city']},
+                                                ${json['state']},
+                                                ${ json['zip']}-${json['country']}<br />
+                                                ${json['phone']}</span>`;
+
+                    $('#selected_address').html(html);
+                    $('#exampleModal').modal('hide');
+
+                    $('#MyForm').trigger("reset");
+
+                });
+
+            });
+        });
+
+        // function setSelected(json) {}
     </script>
 @endsection

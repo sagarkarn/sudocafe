@@ -43,16 +43,21 @@
                             <td>{{ $product->getMenu()->getName() }}</td>
 
                             @if ($product->getImageUrl())
-                                <td><img height="100" width="100" src="/storage/{{ $product->getImageUrl() }}" /></td>
+                                <td><img height="50" width="50" src="/storage/{{ $product->getImageUrl() }}" /></td>
                             @else
                                 <td></td>
                             @endif
                             <td>
-                                <a href="{{ route('admin.product.edit', $product->getId()) }}">Edit</a>
+                                <div style="display: inline-block;" class="nowrap">
+                                    <a class="btn btn-sm btn-info"
+                                        href="{{ route('admin.product.edit', $product->getId()) }}"><i
+                                            class="fas fa-edit    "></i></a>
+                                    <a class="btn btn-sm btn-danger"
+                                        href="{{ route('admin.product.delete', $product->getId()) }}"><i
+                                            class="fas fa-trash" aria-hidden="true"></i></a>
+                                </div>
                             </td>
-                            <td>
-                                <a href="{{ route('admin.product.delete', $product->getId()) }}">Delete</a>
-                            </td>
+
                         </tr>
                     @endforeach
                 </tbody>

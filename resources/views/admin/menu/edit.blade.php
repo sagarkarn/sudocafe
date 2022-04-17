@@ -3,12 +3,13 @@
     <div class="card">
         <div class="card-body">
             <div class="container">
-                <form action="{{ route('admin.menu.store') }}" method="POST">
+                <form action="{{ route('admin.menu.update', $menu->getId()) }}" method="POST">
                     @csrf
                     <div class="form-group row">
                         <label for="name" class="col-sm-12 col-form-label">Name</label>
                         <div class="col-sm-12">
-                            <input type="text" class="form-control" name="name" id="name" placeholder="Enter Menu Name">
+                            <input type="text" class="form-control" name="name" id="name" value="{{ $menu->getName() }}"
+                                placeholder="Enter Menu Name">
                         </div>
                     </div>
 

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('description');
-            $table->string('image_url');
+            $table->string('image_url')->nullable();
             $table->double('rate');
             $table->timestamps();
         });

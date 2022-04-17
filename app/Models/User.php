@@ -69,6 +69,18 @@ class User extends Authenticatable
     {
         $this->carts = $carts;
     }
+    public function addresses()
+    {
+        return $this->hasMany(Address::class);
+    }
+    public function getAddresses()
+    {
+        return $this->addresses;
+    }
+    public function setAddresses($address)
+    {
+        $this->addresses = $address;
+    }
 
     /**
      * The attributes that should be hidden for serialization.

@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Cart;
-use App\Models\Menu;
+use App\Models\Address;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class MenuController extends Controller
+class AddressController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,9 +15,7 @@ class MenuController extends Controller
      */
     public function index()
     {
-        // $count = Cart::where('');
-
-        return view('admin.menu.index')->with('menus', Menu::all());
+        return view('address.index');
     }
 
     /**
@@ -28,7 +25,7 @@ class MenuController extends Controller
      */
     public function create()
     {
-        return view('admin.menu.create');
+        //
     }
 
     /**
@@ -37,15 +34,26 @@ class MenuController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-
     public function store(Request $request)
     {
+        $address = new Address();
+        $address->setHno($request->json('hno'));
+        $address->setCity($request->json('city'));
+        $address->setCountry($request->json('country'));
+        $address->setState($request->json('state'));
+        $address->setStreet($request->json('street'));
+        $address->setZip($request->json('zip'));
+        $address->setPhone($request->json('phone'));
+        $address->setIsDefault(false);
+        $address->setUserId(Auth::user()->getId());
 
-        $name = $request->input('name');
-        $menu = new Menu();
-        $menu->setName($name);
-        $menu->save();
-        return back();
+
+        $address->save();
+
+        $response = array();
+        $response['id'] = $address->getId();
+
+        return json_encode($response);
     }
 
     /**
@@ -67,8 +75,7 @@ class MenuController extends Controller
      */
     public function edit($id)
     {
-        $menu = Menu::find($id);
-        return View('admin.menu.edit')->with('menu', $menu);
+        //
     }
 
     /**
@@ -80,11 +87,7 @@ class MenuController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $menu = Menu::find($id);
-        $menu->setName($request->input('name'));
-        $menu->save();
-
-        return back();
+        //
     }
 
     /**
@@ -95,8 +98,6 @@ class MenuController extends Controller
      */
     public function destroy($id)
     {
-        $menu = Menu::find($id);
-        $menu->delete();
-        return back();
+        //
     }
 }

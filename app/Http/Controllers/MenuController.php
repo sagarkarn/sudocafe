@@ -11,6 +11,11 @@ class MenuController extends Controller
     {
 
 
+
         return view('menu.index')->with('menus', Menu::all());
+    }
+
+    public function edit($id)
+    {
     }
 }

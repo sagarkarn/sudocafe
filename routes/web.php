@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\admin\MenuController;
 use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Auth;
@@ -18,18 +19,20 @@ use Illuminate\Support\Facades\Route;
 
 
 Auth::routes();
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home.index');
+Route::get("/menu", [App\Http\Controllers\MenuController::class, 'index'])->name('menu.index');
 Route::middleware('auth')->group(function () {
-    Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home.index');
     Route::get("/movies", [MovieController::class, 'index'])->name('movie.index');
     Route::get("/movies/create", [MovieController::class, 'create'])->name('movie.create');
     Route::post("/movies/store", [MovieController::class, 'store'])->name('movie.store');
     Route::get("/movies/edit/{id}", [MovieController::class, 'edit'])->name('movie.edit');
     Route::post("/movies/update/{id}", [MovieController::class, 'update'])->name('movie.update');
     Route::get("/movies/delete/{id}", [MovieController::class, 'destroy'])->name('movie.delete');
-    Route::get("/menu", [App\Http\Controllers\MenuController::class, 'index'])->name('menu.index');
     Route::get("/cart", [CartController::class, 'index'])->name('cart.index');
     Route::post("/cart/store", [CartController::class, 'store'])->name('cart.store');
     Route::delete("/cart/delete/{id?}", [CartController::class, 'destroy'])->name('cart.delete');
+    Route::get("/address", [AddressController::class, 'index'])->name('address.index');
+    Route::post("/address/store", [AddressController::class, 'store'])->name('address.store');
 });
 
 Route::middleware('admin')->group(function () {
@@ -44,4 +47,7 @@ Route::middleware('admin')->group(function () {
     Route::get("/admin/menu", [MenuController::class, 'index'])->name('admin.menu.index');
     Route::get("/admin/menu/create", [MenuController::class, 'create'])->name('admin.menu.create');
     Route::post("/admin/menu/store", [MenuController::class, 'store'])->name('admin.menu.store');
+    Route::get("/admin/menu/edit/{id}", [MenuController::class, 'edit'])->name('admin.menu.edit');
+    Route::post("/admin/menu/update/{id}", [MenuController::class, 'update'])->name('admin.menu.update');
+    Route::get("/admin/menu/delete/{id}", [MenuController::class, 'destroy'])->name('admin.menu.delete');
 });
