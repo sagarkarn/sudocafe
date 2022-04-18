@@ -25,7 +25,7 @@
                                 alt="" class="card-img-top">
                             <div
                                 style="position: absolute; bottom: 0px; left: 0; width: 6rem; height: 4rem;
-                                                                                                                                                                                                                                                                                                                                     padding: 10px; background-image: url('https://pizzaonline.dominos.co.in/static/assets/icons/shadow.svg'); background-repeat: no-repeat; background-size: 100% 100%">
+                                                                                                                                                                                                                                                                                                                                         padding: 10px; background-image: url('https://pizzaonline.dominos.co.in/static/assets/icons/shadow.svg'); background-repeat: no-repeat; background-size: 100% 100%">
                             </div>
                             <div style="position: absolute; bottom: 0.5rem; left: 0.5rem;">
                                 <span class="text-light"><strong>₹ {{ $product->getRate() }}</strong></span>
@@ -59,7 +59,7 @@
                                         @csrf
                                         <input type="hidden" name="product_id" value="{{ $product->getId() }}">
                                         <input type="hidden" name="quantity" value="1">
-                                        <button type="submit" class="btn btn-sm rounded btn-primary">
+                                        <button class="btn btn-sm rounded btn-primary">
                                             <i class="fa fa-cart-plus" aria-hidden="true"></i> Add to Cart
                                         </button>
                                     </form>
