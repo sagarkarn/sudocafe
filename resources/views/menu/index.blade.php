@@ -25,7 +25,7 @@
                                 alt="" class="card-img-top">
                             <div
                                 style="position: absolute; bottom: 0px; left: 0; width: 6rem; height: 4rem;
-                                                                                                                                                                                                                         padding: 10px; background-image: url('https://pizzaonline.dominos.co.in/static/assets/icons/shadow.svg'); background-repeat: no-repeat; background-size: 100% 100%">
+                                                                                                                                                                                                                                                                                                                                     padding: 10px; background-image: url('https://pizzaonline.dominos.co.in/static/assets/icons/shadow.svg'); background-repeat: no-repeat; background-size: 100% 100%">
                             </div>
                             <div style="position: absolute; bottom: 0.5rem; left: 0.5rem;">
                                 <span class="text-light"><strong>₹ {{ $product->getRate() }}</strong></span>
@@ -43,10 +43,17 @@
                             </div>
                             <div class="text-right">
                                 @if (Auth::user())
-                                    <button type="button" name="" onclick="addToCard({{ $product->getId() }})" id=""
-                                        class="btn btn-sm rounded btn-primary">
-                                        <i class="fa fa-cart-plus" aria-hidden="true"></i> Add to Cart
-                                    </button>
+                                    @if (!in_array($product->getId(), $carts))
+                                        <button name="" onclick="addToCard({{ $product->getId() }},this)" id=""
+                                            class="btn btn-sm rounded btn-primary">
+                                            <i class="fa fa-cart-plus" aria-hidden="true"></i> <span id="card_text">Add to
+                                                Cart</span>
+                                        </button>
+                                    @else
+                                        <button disabled class="btn btn-sm rounded btn-primary">
+                                            <i class="fa fa-cart-plus" aria-hidden="true"></i> Added
+                                        </button>
+                                    @endif
                                 @else
                                     <form action="{{ route('cart.store') }}" method="post">
                                         @csrf
@@ -69,35 +76,46 @@
 
 @section('script')
     <script>
-        function addToCard(id) {
-
+        function addToCard(id, btn) {
+            $(btn).prop('disabled', true)
+            $(btn).button('loading');
 
 
             let url = '{{ route('cart.store') }}';
-            fetch(url, {
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-                },
-                method: 'POST',
-                body: JSON.stringify({
-                    'quantity': 1,
-                    'product_id': id
-                })
-            }).then(response => {
-                response.json().then(res => {
-                    if (res['success']) {
-                        let currentItem = $('#cart-value').text();
-                        if (currentItem == '') {
-                            currentItem = 1;
+            try {
+                fetch(url, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json; charset=UTF-8',
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                    },
+                    method: 'POST',
+                    body: JSON.stringify({
+                        'quantity': 1,
+                        'product_id': id
+                    })
+                }).then(response => {
+                    response.json().then(res => {
+                        console.log(res);
+                        if (res['success']) {
+                            let currentItem = $('#cart-value').text();
+                            if (currentItem == '') {
+                                currentItem = 1;
+                            } else {
+                                currentItem = parseInt(currentItem) + 1;
+                            }
+                            $(btn).children().last().text("Added");
+                            $('#cart-value').text(currentItem);
+                        } else if (res['message'] == "Already Added in cart") {
+
                         } else {
-                            currentItem = parseInt(currentItem) + 1;
+                            $(btn).prop('disabled', false)
                         }
-                        $('#cart-value').text(currentItem);
-                    }
+                    });
                 });
-            });
+            } catch (e) {
+                $(btn).prop('disabled', false)
+            }
 
 
         }

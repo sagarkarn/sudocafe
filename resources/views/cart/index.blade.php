@@ -1,10 +1,24 @@
 @extends('layouts.app')
 @section('content')
     <script src="{{ asset('js/app.js') }}"></script>
+    <script>
+        var items = [];
+    </script>
+    <div class="alert alert-warning alert-dismissible fade" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong id="error"></strong>
+    </div>
+
+
     <div class="row mt-2">
         <div class="col-md-8">
             @foreach ($items as $item)
                 <div class="card mb-2" id="item{{ $item->getId() }}">
+                    <script>
+                        items.push({{ $item->product->getId() }})
+                    </script>
                     <div class="card-body" style="width: 100%;">
                         <div
                             style="display: flex; width: 100%; justify-content: flex-start; align-items: center; column-gap: 1rem;">
@@ -22,11 +36,11 @@
                                         {{ $item->product->getRate() }}
                                     </div>
                                     <div class="border rounded mt-1 px-2 py-1" style="width: fit-content;">
-                                        <span onclick="decrease('#count{{ $item->getId() }}')"><i class="fa fa-minus"
-                                                aria-hidden="true"></i></span>
-                                        <span class="px-3" id="count{{ $item->getId() }}">1</span>
-                                        <span onclick="increase('#count{{ $item->getId() }}')"><i class="fa fa-plus"
-                                                aria-hidden="true"></i></span>
+                                        <span onclick="decrease('#count{{ $item->product->getId() }}')"><i
+                                                class="fa fa-minus" aria-hidden="true"></i></span>
+                                        <span class="px-3" id="count{{ $item->product->getId() }}">1</span>
+                                        <span onclick="increase('#count{{ $item->product->getId() }}')"><i
+                                                class="fa fa-plus" aria-hidden="true"></i></span>
                                     </div>
                                 </div>
                                 <div>
@@ -48,12 +62,13 @@
             @endforeach
 
         </div>
-        {{-- Address Model --}}
+
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Address</h5>
                     <div class="border rounded p-2 m-2" id="selected_address">
+                        <input type="hidden" id="address_id" value="{{ $default_address->getId() }}" />
                         <span><strong>{{ $default_address->getHno() }}<br></strong>
                             {{ $default_address->getStreet() }},
                             {{ $default_address->getCity() }},
@@ -72,19 +87,21 @@
                 <div class="card-body">
                     <h5 class="card-title">Payment</h5>
                     <div style="display: flex; flex-direction: row; justify-content: left; align-items: center">
-                        <input type="radio" name="payment_mode" />
+                        <input type="radio" name="payment_mode" value="cash" />
                         <label class="ml-2 mb-0">Cash On Delivery</label>
                     </div>
 
                     <div style="display: flex; flex-direction: row; justify-content: left; align-items: center">
-                        <input type="radio" name="payment_mode" />
+                        <input type="radio" name="payment_mode" value="upi" />
                         <label class="ml-2 mb-0">Bhim UPI Google Pay, Phone Pay</label>
                     </div>
-                    <button class="btn btn-primary w-100 mt-3">Checkout</button>
+                    <button class="btn btn-primary w-100 mt-3" onclick="checkout()">Checkout</button>
                 </div>
             </div>
         </div>
     </div>
+
+    {{-- Address Model --}}
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -105,7 +122,8 @@
                                 @foreach (Auth::user()->addresses as $address)
                                     <div class="card mb-1 col-12" style="cursor: pointer;">
                                         <div class="card-body"
-                                            onclick="$('#selected_address').html($(this).html());$('#exampleModal').modal('hide');">
+                                            onclick="$('#selected_address').html($(this).html());$('#exampleModal').modal('hide');$('#address_id').val({{ $address->getId() }})">
+
                                             <span><strong>{{ $address->getHno() }}<br></strong>
                                                 {{ $address->getStreet() }},
                                                 {{ $address->getCity() }},
@@ -270,7 +288,8 @@
                 }, ).then(res => {
                     // res.json().then(json => setSelected(json));
 
-                    let html = `<span><strong>${json['hno']}<br></strong>
+                    let html = `
+                                    <span><strong>${json['hno']}<br></strong>
                                                 ${json['street']},
                                                 ${json['city']},
                                                 ${json['state']},
@@ -278,6 +297,7 @@
                                                 ${json['phone']}</span>`;
 
                     $('#selected_address').html(html);
+                    $('#address_id').val(json['id']);
                     $('#exampleModal').modal('hide');
 
                     $('#MyForm').trigger("reset");
@@ -287,6 +307,53 @@
             });
         });
 
-        // function setSelected(json) {}
+        function checkout() {
+            let mode = null
+            try {
+                mode = document.querySelector('input[name="payment_mode"]:checked').value;
+            } catch (e) {
+                alert('Select payment Mode');
+                return;
+            }
+
+
+            var itemsObj = [];
+            items.forEach(element => {
+                itemsObj.push({
+                    "product_id": element,
+                    "quantity": $('#count' + element).text()
+                })
+            });
+
+            let address = $('#address_id').val();
+            if (address.trim() == '') {
+                alert('select address');
+                return;
+            }
+
+            body = JSON.stringify({
+                "items": itemsObj,
+                "address_id": $('#address_id').val(),
+                "payment_mode": mode,
+            });
+            console.log(body);
+
+            fetch('{{ route('cart.create_order') }}', {
+                method: 'POST',
+                body: body,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                },
+            }).then(response => {
+                response.json().then(text => {
+                    if (text['success']) {
+
+                        window.location.href = "{{ route('cart.success') }}/" + text['id'];
+                    }
+                });
+            });
+        }
     </script>
 @endsection
