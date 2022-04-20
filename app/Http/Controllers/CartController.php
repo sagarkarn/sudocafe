@@ -19,6 +19,7 @@ class CartController extends Controller
     public function index()
     {
         $user = Auth::user();
+        // cartitems
         $items = $user->getCarts();
         $default_address = Address::where('user_id', $user->getId())->where('is_default', true)->first();
         return view('cart.index')->with('items', $items)->with('default_address', $default_address);
@@ -35,27 +36,33 @@ class CartController extends Controller
     {
         Cart::valiate($request);
         $response = array();
+
         $productId = $request->json('product_id');
         if (!$productId) {
             $productId = $request->input('product_id');
         }
+
         $product = Product::find($productId);
         $quantity = $request->json('quantity');
+
         if (!$quantity) {
             $quantity = $request->input('quantity');
         }
 
         $availableCart = Cart::where('product_id', $productId)->first();
+
         if ($availableCart) {
             $response['success'] = false;
             $response['message'] = "Already Added in cart";
             return json_encode($response);
         }
+
         $cart  = new Cart();
         $cart->setProduct($product);
         $cart->setQuantity($quantity);
         $cart->setUser(Auth::user());
         $cart->save();
+
         $response['success'] = true;
         return json_encode($response);
     }
@@ -83,6 +90,7 @@ class CartController extends Controller
     {
         Cart::destroy($id);
         $res = array();
+
         $res['response'] = "success";
 
         return json_encode($res);

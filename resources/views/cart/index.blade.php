@@ -32,20 +32,22 @@
                                     <div>
                                         <h5>{{ $item->product->getTitle() }}</h5>
                                     </div>
-                                    <div>
+                                    <div id="rate{{ $item->product->getId() }}">
                                         {{ $item->product->getRate() }}
                                     </div>
                                     <div class="border rounded mt-1 px-2 py-1" style="width: fit-content;">
-                                        <span onclick="decrease('#count{{ $item->product->getId() }}')"><i
-                                                class="fa fa-minus" aria-hidden="true"></i></span>
+                                        <span onclick="decrease('{{ $item->product->getId() }}')"><i class="fa fa-minus"
+                                                aria-hidden="true"></i></span>
                                         <span class="px-3" id="count{{ $item->product->getId() }}">1</span>
-                                        <span onclick="increase('#count{{ $item->product->getId() }}')"><i
+                                        <span onclick="increase('{{ $item->product->getId() }}')"><i
                                                 class="fa fa-plus" aria-hidden="true"></i></span>
                                     </div>
                                 </div>
                                 <div>
                                     <div class="text-right">
-                                        <h5>₹ {{ $item->product->getRate() }}</h5>
+                                        <h5>₹ <span
+                                                id="total{{ $item->product->getId() }}">{{ $item->product->getRate() }}</span>
+                                        </h5>
                                     </div>
                                     <div class="text-right mt-1 py-1">
                                         <button onclick="remove({{ $item->getId() }})" class="btn btn-danger"><i
@@ -67,8 +69,8 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Address</h5>
+                    <input type="hidden" id="address_id" value="{{ $default_address->getId() }}" />
                     <div class="border rounded p-2 m-2" id="selected_address">
-                        <input type="hidden" id="address_id" value="{{ $default_address->getId() }}" />
                         <span><strong>{{ $default_address->getHno() }}<br></strong>
                             {{ $default_address->getStreet() }},
                             {{ $default_address->getCity() }},
@@ -190,6 +192,7 @@
         </div>
     </div>
 @endsection
+
 @section('script')
     <script>
         async function remove(id) {
@@ -209,17 +212,23 @@
         }
 
         function increase(id) {
-            let current = $(id).text();
-            $(id).text(++current);
+            let current = $("#count" + id).text();
+            $("#count" + id).text(++current);
+            let rate = $("#rate" + id).text().trim();
+            $('#total' + id).text(current * rate);
+
         }
 
         function decrease(id) {
-            let current = $(id).text();
+            let current = $("#count" + id).text();
             if (current <= 1) return;
-            $(id).text(--current);
+            $("#count" + id).text(--current);
+            let rate = $("#rate" + id).text().trim();
+            $('#total' + id).text(current * rate);
         }
 
         $(document).ready(function() {
+
             $("#MyForm").validate({
                 rules: {
                     'hno': {
@@ -273,6 +282,7 @@
             });
             var form = document.getElementById("MyForm");
             form.addEventListener("submit", function(event) {
+
                 event.preventDefault()
                 const data = new FormData(form);
                 const json = Object.fromEntries(data.entries());
@@ -288,8 +298,7 @@
                 }, ).then(res => {
                     // res.json().then(json => setSelected(json));
 
-                    let html = `
-                                    <span><strong>${json['hno']}<br></strong>
+                    let html = `<span><strong>${json['hno']}<br></strong>
                                                 ${json['street']},
                                                 ${json['city']},
                                                 ${json['state']},
@@ -316,7 +325,6 @@
                 return;
             }
 
-
             var itemsObj = [];
             items.forEach(element => {
                 itemsObj.push({
@@ -326,6 +334,7 @@
             });
 
             let address = $('#address_id').val();
+
             if (address.trim() == '') {
                 alert('select address');
                 return;
@@ -339,19 +348,24 @@
             console.log(body);
 
             fetch('{{ route('cart.create_order') }}', {
+
                 method: 'POST',
+
                 body: body,
+
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json; charset=UTF-8',
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                 },
+
             }).then(response => {
                 response.json().then(text => {
-                    if (text['success']) {
 
+                    if (text['success']) {
                         window.location.href = "{{ route('cart.success') }}/" + text['id'];
                     }
+
                 });
             });
         }
