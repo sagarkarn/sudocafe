@@ -11,7 +11,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>@yield('title',"Find Your Movie")</title>
+    <title>@yield('title',"Find Your Food")</title>
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <!-- Custom fonts for this template-->
     <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -56,7 +56,7 @@
 
 
                     <!-- Topbar Search -->
-                    <a href="{{ route('home.index') }}">
+                    <a style="text-decoration: none" href="{{ route('home.index') }}">
                         <h3 class="text-2xl nav-title text-primary" style="font-family: 'Abril Fatface', cursive;">
                             <i>Sudo
                                 Cafe</i>

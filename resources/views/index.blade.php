@@ -6,13 +6,17 @@
     <div class="header_hero bg-light text-primary">
         <div class="container h-100">
             <div class="row h-100">
-                <div class="col-sm-6 d-flex align-items-center h-100">
-                    <div class="text-center">
+                <div class="col-sm-6 d-flex align-items-center h-100 lg:mx-10">
+                    <div class="text-left">
                         <h1 class="text-5xl text-light" style="font-family: 'Abril Fatface', cursive;">Enjoy Food All <br />
                             Over
                             The
                             World
                         </h1>
+                        <small class="text-light">These Are Healthy Racipes shake up your comfort food <br /> fevorite by
+                            adding more vagies
+                            and
+                            swapping out<br /> coking method</small><br />
                         <a href="{{ route('menu.index') }}" class="btn btn-lg mt-3 btn-primary">Order Online Now</a>
                     </div>
 
@@ -26,6 +30,85 @@
 
 
 @section('content')
+    <main class="py-12 md:px-20 sm:px-14 px-6">
+        <div class="sm:flex items-center shadow-md">
+            <div class="md:px-10 sm:px-5">
+                <h1 class="font-bold text-2xl my-2 text-primary">Best Qality for your health</h1>
+                <p class="text-gray-700 mb-2 md:mb-6">It is a long established fact that a reader will be distracted by the
+                    readable content of a page when looking at its layout. The point of using Lorem Ipsum is that....</p>
+                <div class="flex justify-between mb-2">
+                    <span class="font-thin text-sm">May 20th 2022</span>
+                    <span class="sm:block hidden mb-2 text-gray-800 font-bold">Read more</span>
+                </div>
+            </div>
+            <div>
+                <img class="bg-cover"
+                    src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
+                    alt="" />
+            </div>
+        </div>
+        <div class="mt-6 md:flex space-x-6">
+            <div class="shadow-md">
+                <img src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=449&q=80&h=300"
+                    alt="" />
+                <div class="px-4">
+                    <h1 class="mt-3 text-primary text-2xl font-bold my-2">New Dishes</h1>
+                    <p class="text-gray-700 mb-2">It is a long established fact that a reader will be distracted by the
+                        readable content of a page when looking at its layout. The point of using Lorem Ipsum is that....
+                    </p>
+                    <div class="flex justify-between mt-4">
+                        <span class="font-thin text-sm">May 20th 2022</span>
+                        <span class="mb-2 text-gray-800 font-bold">Buy Now</span>
+                    </div>
+                </div>
+            </div>
+            <div class="shadow-md">
+                <img src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=449&q=80&h=300"
+                    alt="" />
+                <div class="px-6">
+                    <h1 class="mt-3 text-gray-800 text-2xl font-bold my-2">long established</h1>
+                    <p class="text-gray-700 mb-2">It is a long established fact that a reader will be distracted by the
+                        readable content of a page when looking at its layout. The point of using Lorem Ipsum is that....
+                    </p>
+                    <div class="flex justify-between mt-4">
+                        <span class="font-thin text-sm">May 20th 2020</span>
+                        <span class="mb-2 text-gray-800 font-bold">Read more</span>
+                    </div>
+                </div>
+            </div>
+            <div class="shadow-md">
+                <img src="https://images.unsplash.com/photo-1484723091739-30a097e8f929?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=449&q=80&h=300"
+                    alt="" />
+                <div class="px-4">
+                    <h1 class="mt-3 text-gray-800 text-2xl font-bold my-2">long established</h1>
+                    <p class="text-gray-700 mb-2">It is a long established fact that a reader will be distracted by the
+                        readable content of a page when looking at its layout. The point of using Lorem Ipsum is that....
+                    </p>
+                    <div class="flex justify-between mt-4">
+                        <span class="font-thin text-sm">May 20th 2020</span>
+                        <span class="mb-2 text-gray-800 font-bold">Read more</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="sm:flex items-center shadow-md mt-10">
+            <div>
+                <img class="bg-cover"
+                    src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
+                    alt="" />
+            </div>
+            <div class="md:px-10 sh sm:px-5">
+                <h1 class="text-gray-800 font-bold text-2xl my-2">long established</h1>
+                <p class="text-gray-700 mb-2 md:mb-6">It is a long established fact that a reader will be distracted by the
+                    readable content of a page when looking at its layout. The point of using Lorem Ipsum is that....</p>
+                <div class="flex justify-between mb-2">
+                    <span class="font-thin text-sm">May 20th 2020</span>
+                    <span class="sm:block hidden mb-2 text-gray-800 font-bold">Read more</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
     <div class="py-16 white">
         <div class="container m-auto px-6 text-gray-600 md:px-12 xl:px-6">
             <h2 class="mb-12 text-center text-2xl text-gray-900 font-bold md:text-4xl">What's our customers say</h2>
